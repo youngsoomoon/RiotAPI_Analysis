@@ -19,6 +19,7 @@ import json
 import pandas as pd
 import pymongo
 import time
+import matplotlib.pyplot as plt
 
 # +
 from pymongo import MongoClient
@@ -31,7 +32,7 @@ iron2_gameId_collection = db.iron2_gameId
 iron2_gameData_collection = db.iron2_gameData
 # -
 
-api_key = 'RGAPI-8e41ee52-29f8-4a01-8a37-9cef4cea3522'
+api_key = 'RGAPI-2bfa9053-b8e6-4fed-928e-8cf4892b96d2'
 
 # # mongoDB에서 summonerID 가져오기
 
@@ -97,5 +98,67 @@ for i in iron2_gameId:
     iron2_gameData_collection.insert_one(r_gameData.json())
     print(iron2_gameId.index(i),'/',len(iron2_gameId))
     time.sleep(1.5)
+
+# # gameData 불러와서 DataFrame으로 만들기
+
+iron_league_df = pd.DataFrame(iron2_gameData_collection.find())
+
+iron_league_df
+
+iron_league_df.isnull().sum()
+
+iron_league_df['status']
+
+# # status값이 출력된 컬럼 삭제
+
+iron_league_df = iron_league_df.drop(columns=['status'],axis=1)
+
+iron_league_df.info()
+
+# NaN값을 가진 행 모두 삭제
+iron_league_df = iron_league_df.dropna()
+
+iron_league_df.info()
+
+# # teams 컬럼만 가져와서 새로운 컬럼 만들기
+
+iron_teams_df = pd.DataFrame(dict(iron_league_df['teams'])).T
+iron_teams_df
+
+# # 동일한 형태의 데이터프레임 합치기 pd.concat()
+# ## iron_league_df에 iron_teams_df 열로 추가하기
+
+iron_teams_df = pd.concat([iron_league_df, iron_teams_df], axis=1)
+iron_teams_df
+
+# # iron_teams_df의 0 컬럼을 딕셔너리형태로 바꾸고 데이터프레임으로 생성
+
+df1 = pd.DataFrame(dict(iron_teams_df[0])).T
+df1
+
+# 경기 데이터의 전체 승/패 차트
+df1['win'].value_counts().plot.barh()
+
+win = df1[ df1["win"] == "Win" ]
+win
+
+win_firstBlood = win[win["firstBlood"] == True]
+win_firstBlood
+
+lose = df1[ df1["win"] == "Fail" ]
+lose
+
+lose_firstBlood = lose[lose["firstBlood"] == True]
+lose_firstBlood
+
+labels = ['Win & FirstBlood', 'Lose & FirstBlood']
+sizes = [len(win_firstBlood),len(lose_firstBlood)]
+plt.bar(labels,sizes, width=0.3, color = ['green','red'])
+
+#퍼블따고 이길 확률
+(len(win_firstBlood)/(len(win_firstBlood)+len(lose_firstBlood)))*100
+
+#퍼블따고 질 확률
+(len(lose_firstBlood)/(len(win_firstBlood)+len(lose_firstBlood)))*100
 
 
