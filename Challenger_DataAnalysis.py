@@ -52,8 +52,8 @@ Challlenger_sumId
 
 len(Challlenger_sumId)
 
-# # accId 받아오기
-# ## 추후 모든 챌린저 sumID 입력으로 변경
+# # sumId입력을 통해 accId 받아오기
+#
 
 accId_list = []
 for i in range(len(Challlenger_sumId)):
@@ -214,6 +214,44 @@ chal_teams_df
 h = chal_teams_df.iloc[:,8].hist(figsize=(12,12))
 
 sns.scatterplot(data=chal_teams_df, x = "towerKills", y = 'dragonKills',hue='win')
+
+# --------------------------------------------------------------------------------------------------
+
+# # FirstBlood , First Tower , First Inhibitor, First Dragon 에 따른 승률
+
+# ## FirstBlood & FirstTower
+
+chal_teams_df
+
+# ### firstBlood 와 firstTower 가 모두 True
+
+df_FB_FT_TT = chal_teams_df[
+    (chal_teams_df["firstBlood"] == True) &
+    (chal_teams_df["firstTower"] == True)]
+df_FB_FT_TT
+
+chal_teams_df.groupby(["firstBlood","firstTower","firstDragon","firstInhibitor"])["win"].count()
+
+
+
+chal_teams_df.groupby(["firstBlood","firstTower","firstDragon","firstInhibitor"])["win"].count().plot.bar()
+
+chal_teams_df['BTDI'] = chal_teams_df[]
+
+if chal_teams_df[(chal_teams_df["firstBlood"] == True) &
+    (chal_teams_df["firstTower"] == True)]
+
+chal_teams_df['firstBlood'].value_counts().plot.bar()
+
+
+
+
+
+
+
+
+
+# --------------------------------------------------------------------------------------------------
 
 # # 챌린저데이터에서 밴 챔피언ID 가져오기
 
