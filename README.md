@@ -1,4 +1,6 @@
+
 # [:mag:RiotAPI를 이용한 League Of Legend 게임 데이터 분석]
+
 RiotApi로부터 각 리그당 (아이언 ~ 챌린저) 2만여개의 데이터를 가져와 mongoDB에 저장 후,
 게임 데이터를 분석한다.
 * 'firstBlood를 따면 패배한다'라는 속설을 검증
